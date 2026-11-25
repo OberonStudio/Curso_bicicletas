@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>VeloAcademy — Curso Interactivo de Bicicletas</title>
+  <meta name="description" content="Curso interactivo de ciclismo, mecánica, biomecánica y seguridad vial con diseño estilo Apple para Canvas LMS.">
+  <style>
+    /* ==========================================================================
+       1. VARIABLES Y RESET (Estilo Apple)
+       ========================================================================== */
+    :root {
+      --bg-dark: #000000;
+      --bg-dark-elevated: #111113;
+      --bg-dark-card: #161618;
+      --bg-light: #ffffff;
+      --bg-light-alt: #f5f5f7;
+      --text-dark-primary: #f5f5f7;
+      --text-dark-secondary: #a1a1a6;
+      --text-light-primary: #1d1d1f;
+      --text-light-secondary: #6e6e73;
+      --apple-blue: #0071e3;
+      --apple-blue-hover: #0077ed;
+      --apple-blue-light: #2997ff;
+      --apple-green: #30d158;
+      --apple-orange: #ff9f0a;
+      --apple-red: #ff453a;
+      --apple-purple: #bf5af2;
+      --glass-dark: rgba(22, 22, 23, 0.8);
+      --border-dark: rgba(255, 255, 255, 0.12);
+      --border-light: rgba(0, 0, 0, 0.1);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-pill: 980px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      background: var(--bg-dark);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text-dark-primary);
+      background-color: var(--bg-dark);
+      line-height: 1.47;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    /* ==========================================================================
+       2. NAVEGACIÓN GLOBAL (Frosted Glass Header)
+       ========================================================================== */
+    .global-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background: var(--glass-dark);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      color: #f5f5f7;
+      transition: opacity 0.2s;
+    }
+
+    .nav-logo:hover { opacity: 0.8; }
+
+    .nav-list {
+      display: flex;
+      list-style: none;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(245, 245, 247, 0.82);
+      transition: color 0.2s;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: #ffffff;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      color: rgba(245, 245, 247, 0.86);
+      border-radius: 50%;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-badge {
+      position: absolute;
+      top: 0;
+      right: -4px;
+      background: var(--apple-blue);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 999px;
+      line-height: 1.2;
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .hamburger-bar {
+      width: 16px;
+      height: 1.5px;
+      background: #f5f5f7;
+      border-radius: 2px;
+      transition: transform 0.25s;
+    }
+
+    /* Search & Progress Overlays */
+    .overlay-panel {
+      position: fixed;
+      top: 48px;
+      left: 0;
+      width: 100%;
+      background: rgba(22, 22, 24, 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 28px 20px;
+      z-index: 990;
+      transform: translateY(-16px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s var(--transition-smooth), transform 0.28s var(--transition-smooth);
+    }
+
+    .overlay-panel.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .search-input-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+    }
+
+    .search-input-box input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
+    }
+
+    .quick-links-list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .quick-links-list a {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-dark-secondary);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .quick-links-list a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    /* Progress Bar Dropdown */
+    .progress-bar-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0 18px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--apple-blue), var(--apple-green));
+      border-radius: 999px;
+      transition: width 0.5s var(--transition-smooth);
+    }
+
+    .progress-checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .progress-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+    }
+
+    .progress-item.done {
+      border-color: rgba(48, 209, 88, 0.45);
+      background: rgba(48, 209, 88, 0.1);
+    }
+
+    /* Mobile Drawer */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 48px;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.96);
+      padding: 20px;
+      border-bottom: 1px solid var(--border-dark);
+      z-index: 980;
+    }
+
+    .mobile-menu.open { display: block; }
+    .mobile-menu ul { list-style: none; display: grid; gap: 12px; }
+    .mobile-menu a { font-size: 17px; font-weight: 500; display: block; padding: 6px 0; }
+
+    /* ==========================================================================
+       3. RIBBON BANNER
+       ========================================================================== */
+    .ribbon-banner {
+      margin-top: 48px;
+      background: #1d1d1f;
+      color: #f5f5f7;
+      text-align: center;
+      padding: 11px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .ribbon-link {
+      color: var(--apple-blue-light);
+      margin-left: 6px;
+      font-weight: 500;
+    }
+
+    .ribbon-link:hover { text-decoration: underline; }
+
+    /* ==========================================================================
+       4. BOTONES Y COMPONENTES APPLE
+       ========================================================================== */
+    .apple-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--radius-pill);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      transition: transform 0.2s var(--transition-smooth), background 0.2s, box-shadow 0.2s;
+    }
+
+    .apple-btn:active { transform: scale(0.97); }
+
+    .apple-btn-primary {
+      background: var(--apple-blue);
+      color: #ffffff;
+    }
+
+    .apple-btn-primary:hover {
+      background: var(--apple-blue-hover);
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+    }
+
+    .apple-btn-secondary {
+      background: transparent;
+      color: var(--apple-blue-light);
+      border: 1px solid var(--apple-blue-light);
+    }
+
+    .apple-btn-secondary:hover {
+      background: rgba(41, 151, 255, 0.12);
+    }
+
+    .apple-btn-light-secondary {
+      background: transparent;
+      color: var(--apple-blue);
+      border: 1px solid var(--apple-blue);
+    }
+
+    .apple-btn-light-secondary:hover {
+      background: rgba(0, 113, 227, 0.08);
+    }
+
+    .section-dark {
+      background: var(--bg-dark);
+      color: var(--text-dark-primary);
+    }
+
+    .section-light {
+      background: var(--bg-light-alt);
+      color: var(--text-light-primary);
+    }
+
+    .section-white {
+      background: var(--bg-light);
+      color: var(--text-light-primary);
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 84px 24px;
+    }
+
+    /* Animaciones de revelado al hacer scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s var(--transition-smooth), transform 0.75s var(--transition-smooth);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       5. HERO 1: CURSO INTEGRAL (ESTILO PRO DARK + 3D TILT + BICI ANIMADA)
+       ========================================================================== */
+    .hero-section {
+      position: relative;
+      padding: 64px 24px 80px;
+      text-align: center;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 28%, rgba(0, 113, 227, 0.18), transparent 60%), #000;
+    }
+
+    .eyebrow-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      margin-bottom: 18px;
+      color: #e5e5ea;
+    }
+
+    .sparkle-gradient {
+      background: linear-gradient(90deg, #5ac8fa, #bf5af2, #ff9f0a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.06;
+      margin-bottom: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+      color: var(--text-dark-secondary);
+      max-width: 660px;
+      margin: 0 auto 28px;
+      font-weight: 400;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    /* Dynamic Telemetry Pill (Inspirado en Dynamic Island) */
+    .telemetry-island {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: #121214;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: all 0.35s var(--transition-smooth);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .telemetry-island:hover {
+      border-color: rgba(41, 151, 255, 0.55);
+      transform: scale(1.03);
+    }
+
+    .telemetry-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--apple-green);
+      box-shadow: 0 0 10px var(--apple-green);
+      animation: pulseDot 1.6s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.65; }
+    }
+
+    .telemetry-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: #f5f5f7;
+    }
+
+    .telemetry-hint {
+      font-size: 11px;
+      color: var(--text-dark-secondary);
+      border-left: 1px solid rgba(255, 255, 255, 0.15);
+      padding-left: 12px;
+    }
+
+    /* Escenario 3D de la Bicicleta */
+    .bike-stage-wrapper {
+      perspective: 1200px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .bike-stage-card {
+      position: relative;
+      background: linear-gradient(145deg, rgba(28, 28, 32, 0.92), rgba(14, 14, 16, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 28px;
+      padding: 36px 24px 28px;
+      transform-style: preserve-3d;
+      transition: transform 0.12s ease-out, box-shadow 0.3s;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .bike-stage-card.aura-active {
+      box-shadow: 0 0 60px rgba(41, 151, 255, 0.25), 0 0 100px rgba(191, 90, 242, 0.15);
+      border-color: rgba(41, 151, 255, 0.45);
+    }
+
+    .road-lines {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .bike-svg-hero {
+      width: 100%;
+      max-width: 620px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.6));
+    }
+
+    .wheel-spin {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: spinWheel var(--wheel-speed, 2.2s) linear infinite;
+    }
+
+    .wheel-spin.paused {
+      animation-play-state: paused;
+    }
+
+    @keyframes spinWheel {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Suelo animado */
+    .road-track {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      margin-top: -12px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .road-dash {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background: repeating-linear-gradient(90deg, rgba(41, 151, 255, 0.7) 0 32px, transparent 32px 72px);
+      animation: roadMove var(--road-speed, 1.4s) linear infinite;
+    }
+
+    .road-dash.paused { animation-play-state: paused; }
+
+    @keyframes roadMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-72px); }
+    }
+
+    /* Controles de estilo y velocidad debajo de la bici */
+    .hero-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .finish-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .finish-label {
+      font-size: 13px;
+      color: var(--text-dark-secondary);
+      margin-right: 4px;
+    }
+
+    .swatch-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+    }
+
+    .swatch-btn.active {
+      border-color: #ffffff;
+      transform: scale(1.15);
+    }
+
+    .speed-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mini-pill-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .mini-pill-btn:hover { background: rgba(255, 255, 255, 0.18); }
+
+    /* ==========================================================================
+       6. SECCIÓN 2 (LIGHT): ANATOMÍA INTERACTIVA DE LA BICICLETA (HOTSPOTS)
+       ========================================================================== */
+    .section-header-center {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 48px;
+    }
+
+    .section-eyebrow {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--apple-blue);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .section-title-lg {
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.12;
+      margin-bottom: 14px;
+    }
+
+    .section-desc {
+      font-size: 17px;
+      color: var(--text-light-secondary);
+    }
+
+    .section-dark .section-desc {
+      color: var(--text-dark-secondary);
+    }
+
+    .anatomy-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .anatomy-diagram-box {
+      position: relative;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 36px 24px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .anatomy-svg-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .hotspot-dot {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      margin-left: -15px;
+      margin-top: -15px;
+      border-radius: 50%;
+      background: var(--apple-blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 14px rgba(0, 113, 227, 0.45);
+      transition: transform 0.25s, background 0.25s;
+      z-index: 5;
+    }
+
+    .hotspot-dot::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--apple-blue);
+      opacity: 0.45;
+      animation: hotspotPing 2s infinite;
+    }
+
+    @keyframes hotspotPing {
+      0% { transform: scale(0.85); opacity: 0.65; }
+      100% { transform: scale(1.45); opacity: 0; }
+    }
+
+    .hotspot-dot:hover, .hotspot-dot.active {
+      transform: scale(1.2);
+      background: #1d1d1f;
+    }
+
+    .anatomy-info-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .anatomy-part-tag {
+      display: inline-block;
+      background: rgba(0, 113, 227, 0.1);
+      color: var(--apple-blue);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 12px;
+    }
+
+    .anatomy-part-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .anatomy-part-text {
+      color: var(--text-light-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .anatomy-specs {
+      background: var(--bg-light-alt);
+      border-radius: 14px;
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      padding-bottom: 6px;
+    }
+
+    .spec-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .spec-key { color: var(--text-light-secondary); }
+    .spec-val { font-weight: 600; color: var(--text-light-primary); }
+
+    /* ==========================================================================
+       7. SECCIÓN 3 (DARK): SIMULADOR DE TRANSMISIÓN Y CADENCIA
+       ========================================================================== */
+    .simulator-card {
+      background: var(--bg-dark-card);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg);
+      padding: 34px;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .gear-visual-box {
+      background: radial-gradient(circle at center, rgba(0, 113, 227, 0.12), transparent 70%), #0a0a0c;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 28px 20px;
+      text-align: center;
+    }
+
+    .gear-svg {
+      width: 100%;
+      max-width: 360px;
+      height: auto;
+    }
+
+    .gear-spin {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: spinWheel 3s linear infinite;
+    }
+
+    .gear-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .metric-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px 10px;
+    }
+
+    .metric-val {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-dark-secondary);
+      margin-top: 2px;
+    }
+
+    .control-group {
+      margin-bottom: 22px;
+    }
+
+    .control-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .chip-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      font-weight: 500;
+      color: #e5e5ea;
+      transition: all 0.2s;
+    }
+
+    .chip-btn.active {
+      background: var(--apple-blue);
+      border-color: var(--apple-blue);
+      color: #fff;
+    }
+
+    .range-slider {
+      width: 100%;
+      accent-color: var(--apple-blue);
+      cursor: pointer;
+    }
+
+    .terrain-alert {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(41, 151, 255, 0.12);
+      border: 1px solid rgba(41, 151, 255, 0.3);
+      font-size: 14px;
+      color: #e5e5ea;
+    }
+
+    .terrain-alert.warning {
+      background: rgba(255, 159, 10, 0.14);
+      border-color: rgba(255, 159, 10, 0.45);
+      color: #ffd60a;
+    }
+
+    /* ==========================================================================
+       8. SECCIÓN 4: BENTO GRID 2x2 (ESTILO APPLE SHOWCASE)
+       ========================================================================== */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .bento-card {
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.35s var(--transition-smooth);
+    }
+
+    .bento-card:hover { transform: translateY(-4px); }
+
+    .bento-dark {
+      background: #111113;
+      color: #f5f5f7;
+      border: 1px solid var(--border-dark);
+    }
+
+    .bento-light {
+      background: #ffffff;
+      color: #1d1d1f;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    }
+
+    .bento-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .bento-sub {
+      font-size: 14px;
+      opacity: 0.78;
+      margin-bottom: 20px;
+    }
+
+    .bento-box-inner {
+      background: rgba(128, 128, 128, 0.1);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .input-inline {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .apple-input {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(128, 128, 128, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+      color: inherit;
+      font-size: 15px;
+      font-family: inherit;
+      width: 110px;
+    }
+
+    .bento-light .apple-input {
+      background: #f5f5f7;
+    }
+
+    .abc-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      margin-bottom: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .abc-item.checked {
+      background: rgba(48, 209, 88, 0.14);
+      border-color: rgba(48, 209, 88, 0.4);
+    }
+
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .signal-btn {
+      padding: 10px;
+      border-radius: 12px;
+      background: #f5f5f7;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .signal-btn.active {
+      background: rgba(0, 113, 227, 0.1);
+      border-color: var(--apple-blue);
+      color: var(--apple-blue);
+    }
+
+    /* ==========================================================================
+       9. SECCIÓN 5: MÓDULOS DEL CURSO (CARRUSEL + MODAL DE LECCIÓN)
+       ========================================================================== */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .module-card {
+      background: linear-gradient(165deg, #1c1c1e 0%, #111113 100%);
+      border: 1px solid var(--border-dark);
+      border-radius: 22px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s var(--transition-smooth), border-color 0.3s;
+      cursor: pointer;
+    }
+
+    .module-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(41, 151, 255, 0.55);
+    }
+
+    .module-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--apple-blue-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .module-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .module-summary {
+      font-size: 14px;
+      color: var(--text-dark-secondary);
+      margin-bottom: 20px;
+    }
+
+    .module-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--apple-blue-light);
+    }
+
+    .module-status-pill {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-dark-secondary);
+    }
+
+    .module-status-pill.done {
+      background: rgba(48, 209, 88, 0.18);
+      color: var(--apple-green);
+    }
+
+    /* ==========================================================================
+       10. SECCIÓN 6 (LIGHT): EVALUACIÓN INTERACTIVA (QUIZ CANVAS)
+       ========================================================================== */
+    .quiz-box {
+      max-width: 760px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.06);
+    }
+
+    .quiz-progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-light-secondary);
+      margin-bottom: 18px;
+    }
+
+    .quiz-question {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-opt {
+      text-align: left;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: var(--bg-light-alt);
+      border: 1.5px solid transparent;
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .quiz-opt:hover:not(:disabled) {
+      border-color: var(--apple-blue);
+      background: rgba(0, 113, 227, 0.05);
+    }
+
+    .quiz-opt.correct {
+      background: rgba(48, 209, 88, 0.14);
+      border-color: #248a3d;
+      color: #155724;
+    }
+
+    .quiz-opt.wrong {
+      background: rgba(255, 69, 58, 0.12);
+      border-color: #d70015;
+      color: #721c24;
+    }
+
+    .quiz-feedback {
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      background: var(--bg-light-alt);
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    /* ==========================================================================
+       11. MODAL DE LECCIÓN & DOCK FLOTANTE & FOOTER
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 2000;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: #1c1c1e;
+      color: #f5f5f7;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      max-width: 620px;
+      width: 100%;
+      padding: 32px;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+      animation: modalPop 0.3s var(--transition-smooth);
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-bullets {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin: 18px 0 24px;
+    }
+
+    .modal-bullets li {
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+    }
+
+    .floating-dock {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(28, 28, 30, 0.84);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-pill);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 950;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .dock-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(245, 245, 247, 0.85);
+      padding: 7px 12px;
+      border-radius: var(--radius-pill);
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+
+    .dock-link:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .global-footer {
+      background: var(--bg-light-alt);
+      color: var(--text-light-secondary);
+      font-size: 12px;
+      padding: 40px 24px 90px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .footer-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .footer-notes {
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      display: grid;
+      gap: 6px;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ==========================================================================
+       12. RESPONSIVE
+       ========================================================================== */
+    @media (max-width: 860px) {
+      .nav-list { display: none; }
+      .nav-hamburger { display: flex; }
+      .anatomy-grid, .simulator-card, .bento-grid {
+        grid-template-columns: 1fr;
+      }
+      .floating-dock {
+        max-width: 94%;
+        overflow-x: auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================
+       NAVEGACIÓN GLOBAL (Frosted Glass estilo Apple)
+       ======================================================== -->
+  <header class="global-header">
+    <div class="nav-container">
+      <a href="#inicio" class="nav-logo" aria-label="VeloAcademy Inicio">
+        <svg viewBox="0 0 28 18" width="24" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="6" cy="12" r="4.2"/>
+          <circle cx="22" cy="12" r="4.2"/>
+          <path d="M6 12 L12 5 H18 L22 12 M12 5 L14 12 H6 M18 5 L17 2.5 H19.5"/>
+        </svg>
+        <span>VeloAcademy</span>
+      </a>
+
+      <ul class="nav-list">
+        <li><a href="#inicio" class="nav-link">Inicio</a></li>
+        <li><a href="#anatomia" class="nav-link">Anatomía</a></li>
+        <li><a href="#simulador" class="nav-link">Transmisión</a></li>
+        <li><a href="#bento" class="nav-link">Biomecánica</a></li>
+        <li><a href="#modulos" class="nav-link">Módulos</a></li>
+        <li><a href="#evaluacion" class="nav-link">Evaluación</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="nav-btn" id="search-trigger" aria-label="Buscar en el curso">
+          <svg viewBox="0 0 17 17" width="16" height="16" fill="currentColor">
+            <path d="M16.3 15.2l-3.9-3.9c1-1.3 1.6-2.9 1.6-4.6 0-4.1-3.4-7.5-7.5-7.5s-7.5 3.4-7.5 7.5 3.4 7.5 7.5 7.5c1.7 0 3.3-.6 4.6-1.6l3.9 3.9c.2.2.4.3.7.3s.5-.1.7-.3c.4-.4.4-1 0-1.4zm-9.8-1.7c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
+          </svg>
+        </button>
+
+        <button class="nav-btn" id="progress-trigger" aria-label="Tu progreso del curso">
+          <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="progress-badge" id="nav-progress-badge">0%</span>
+        </button>
+
+        <button class="nav-btn nav-hamburger" id="nav-toggle" aria-label="Menú móvil">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Buscador del curso -->
+    <div class="overlay-panel" id="search-overlay">
+      <div class="overlay-inner">
+        <div class="search-input-box">
+          <svg viewBox="0 0 17 17" width="16" height="16" fill="#a1a1a6">
+            <path d="M16.3 15.2l-3.9-3.9c1-1.3 1.6-2.9 1.6-4.6 0-4.1-3.4-7.5-7.5-7.5s-7.5 3.4-7.5 7.5 3.4 7.5 7.5 7.5c1.7 0 3.3-.6 4.6-1.6l3.9 3.9c.2.2.4.3.7.3s.5-.1.7-.3c.4-.4.4-1 0-1.4zm-9.8-1.7c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
+          </svg>
+          <input type="text" id="course-search-input" placeholder="Buscar tema: cadencia, sillín, frenos, presión, test...">
+          <button id="search-close" style="font-size:20px;color:#a1a1a6;">&times;</button>
+        </div>
+        <ul class="quick-links-list" id="search-results">
+          <li><a href="#anatomia"><span>Anatomía interactiva de la bicicleta</span><span>Ir &rarr;</span></a></li>
+          <li><a href="#simulador"><span>Simulador de platos, piñones y cadencia</span><span>Ir &rarr;</span></a></li>
+          <li><a href="#bento"><span>Calculadora de altura del sillín y presión</span><span>Ir &rarr;</span></a></li>
+          <li><a href="#modulos"><span>Módulos teóricos del curso</span><span>Ir &rarr;</span></a></li>
+          <li><a href="#evaluacion"><span>Evaluación final interactiva</span><span>Ir &rarr;</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Panel de progreso -->
+    <div class="overlay-panel" id="progress-overlay">
+      <div class="overlay-inner">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-size:18px;font-weight:700;">Tu Progreso en el Curso</h3>
+          <button id="progress-close" style="font-size:20px;color:#a1a1a6;">&times;</button>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="global-progress-fill"></div>
+        </div>
+        <div class="progress-checklist" id="progress-checklist"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#a1a1a6;">
+          <span>El progreso se guarda automáticamente en este navegador.</span>
+          <button id="reset-progress-btn" class="mini-pill-btn">Reiniciar progreso</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú móvil -->
+    <div class="mobile-menu" id="mobile-menu">
+      <ul>
+        <li><a href="#inicio" class="mobile-link">Inicio</a></li>
+        <li><a href="#anatomia" class="mobile-link">Anatomía 360°</a></li>
+        <li><a href="#simulador" class="mobile-link">Simulador de Transmisión</a></li>
+        <li><a href="#bento" class="mobile-link">Biomecánica y Presión</a></li>
+        <li><a href="#modulos" class="mobile-link">Módulos</a></li>
+        <li><a href="#evaluacion" class="mobile-link">Evaluación Final</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Ribbon Banner -->
+  <aside class="ribbon-banner">
+    <span>Curso interactivo diseñado para <strong>Canvas LMS</strong> · Explora las simulaciones y completa los 4 módulos.</span>
+    <a href="#modulos" class="ribbon-link">Empezar módulos &rsaquo;</a>
+  </aside>
+
+  <main>
+    <!-- ========================================================
+         HERO 1: EXPERIENCIA PRINCIPAL (ESTILO APPLE PRO DARK)
+         ======================================================== -->
+    <section class="hero-section" id="inicio">
+      <div class="eyebrow-badge">
+        <span class="sparkle-gradient">✦</span> Curso Certificado · Ciclismo &amp; Mecánica Pro
+      </div>
+
+      <h1 class="hero-title">Bicicleta. Dominada.</h1>
+      <p class="hero-subtitle">
+        Ingeniería, biomecánica, transmisión y seguridad vial en una experiencia interactiva pensada para aprender haciendo.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#anatomia" class="apple-btn apple-btn-primary">Explorar anatomía</a>
+        <a href="#evaluacion" class="apple-btn apple-btn-secondary">Ir al test final</a>
+      </div>
+
+      <!-- Dynamic Telemetry Pill -->
+      <div>
+        <button class="telemetry-island" id="telemetry-pill" type="button" title="Haz clic para cambiar modo de telemetría">
+          <span class="telemetry-dot"></span>
+          <span class="telemetry-text" id="telemetry-text">Modo Carretera Aero · 90 RPM · 245 W</span>
+          <span class="telemetry-hint">Cambiar modo</span>
+        </button>
+      </div>
+
+      <!-- Escenario 3D interactivo -->
+      <div class="bike-stage-wrapper">
+        <div class="bike-stage-card" id="bike-stage-card">
+          <div class="road-lines">
+            <svg class="bike-svg-hero" viewBox="0 0 640 340" aria-label="Bicicleta interactiva animada">
+              <defs>
+                <linearGradient id="frameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" id="frame-stop-1" stop-color="#3a3a3c"/>
+                  <stop offset="100%" id="frame-stop-2" stop-color="#1c1c1e"/>
+                </linearGradient>
+                <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#555"/>
+                  <stop offset="100%" stop-color="#1f1f22"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Sombra de suelo -->
+              <ellipse cx="320" cy="306" rx="235" ry="12" fill="rgba(0,0,0,0.55)"/>
+
+              <!-- Rueda Trasera -->
+              <g class="wheel-spin" id="rear-wheel">
+                <circle cx="165" cy="222" r="76" fill="none" stroke="#18181b" stroke-width="14"/>
+                <circle cx="165" cy="222" r="68" fill="none" stroke="url(#rimGrad)" stroke-width="5"/>
+                <circle cx="165" cy="222" r="62" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1"/>
+                <!-- Radios -->
+                <g stroke="rgba(255,255,255,0.4)" stroke-width="1.5">
+                  <line x1="165" y1="154" x2="165" y2="290"/>
+                  <line x1="97" y1="222" x2="233" y2="222"/>
+                  <line x1="117" y1="174" x2="213" y2="270"/>
+                  <line x1="117" y1="270" x2="213" y2="174"/>
+                </g>
+                <circle cx="165" cy="222" r="14" fill="#2c2c2e" stroke="#8e8e93" stroke-width="2"/>
+                <!-- Disco freno trasero -->
+                <circle cx="165" cy="222" r="22" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="6 4"/>
+              </g>
+
+              <!-- Rueda Delantera -->
+              <g class="wheel-spin" id="front-wheel">
+                <circle cx="475" cy="222" r="76" fill="none" stroke="#18181b" stroke-width="14"/>
+                <circle cx="475" cy="222" r="68" fill="none" stroke="url(#rimGrad)" stroke-width="5"/>
+                <circle cx="475" cy="222" r="62" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1"/>
+                <g stroke="rgba(255,255,255,0.4)" stroke-width="1.5">
+                  <line x1="475" y1="154" x2="475" y2="290"/>
+                  <line x1="407" y1="222" x2="543" y2="222"/>
+                  <line x1="427" y1="174" x2="523" y2="270"/>
+                  <line x1="427" y1="270" x2="523" y2="174"/>
+                </g>
+                <circle cx="475" cy="222" r="10" fill="#2c2c2e" stroke="#8e8e93" stroke-width="2"/>
+                <circle cx="475" cy="222" r="24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-dasharray="6 4"/>
+              </g>
+
+              <!-- Cadena -->
+              <path d="M165 208 L295 204 M165 236 L295 244" stroke="#8e8e93" stroke-width="2.5" stroke-dasharray="5 3"/>
+
+              <!-- Cuadro principal -->
+              <g stroke-linecap="round" stroke-linejoin="round">
+                <!-- Vainas y tirantes -->
+                <line x1="165" y1="222" x2="295" y2="224" stroke="url(#frameGrad)" stroke-width="8"/>
+                <line x1="165" y1="222" x2="258" y2="112" stroke="url(#frameGrad)" stroke-width="6"/>
+                <!-- Tubo de sillín -->
+                <line x1="295" y1="224" x2="246" y2="82" stroke="url(#frameGrad)" stroke-width="11"/>
+                <!-- Tubo superior -->
+                <line x1="256" y1="108" x2="418" y2="98" stroke="url(#frameGrad)" stroke-width="11"/>
+                <!-- Tubo diagonal -->
+                <line x1="295" y1="224" x2="424" y2="116" stroke="url(#frameGrad)" stroke-width="14"/>
+                <!-- Pipa de dirección y Horquilla -->
+                <line x1="414" y1="86" x2="430" y2="128" stroke="url(#frameGrad)" stroke-width="13"/>
+                <line x1="426" y1="120" x2="475" y2="222" stroke="url(#frameGrad)" stroke-width="9"/>
+                <!-- Acento de color de marca -->
+                <line x1="278" y1="108" x2="390" y2="100" id="frame-accent-line" stroke="#2997ff" stroke-width="3"/>
+              </g>
+
+              <!-- Tija y Sillín -->
+              <line x1="246" y1="82" x2="238" y2="62" stroke="#aeaeb2" stroke-width="6" stroke-linecap="round"/>
+              <path d="M214 60 Q242 54 268 62 Q256 68 220 66 Z" fill="#1c1c1e" stroke="#636366" stroke-width="1.5"/>
+
+              <!-- Potencia y Manillar Drop -->
+              <path d="M415 88 L410 72 L442 70" fill="none" stroke="#aeaeb2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M442 70 C470 70 474 106 446 110" fill="none" stroke="#2c2c2e" stroke-width="6" stroke-linecap="round"/>
+
+              <!-- Plato y Biela animada -->
+              <g class="wheel-spin" id="crank-spin">
+                <circle cx="295" cy="224" r="22" fill="#2c2c2e" stroke="#aeaeb2" stroke-width="2.5"/>
+                <line x1="295" y1="224" x2="324" y2="246" stroke="#e5e5ea" stroke-width="5" stroke-linecap="round"/>
+                <rect x="318" y="244" width="14" height="5" rx="2" fill="#2997ff"/>
+              </g>
+            </svg>
+            <div class="road-track">
+              <div class="road-dash" id="road-dash"></div>
+            </div>
+          </div>
+
+          <!-- Controles de acabado y animación -->
+          <div class="hero-controls-bar">
+            <div class="finish-selector">
+              <span class="finish-label">Modalidad y acabado:</span>
+              <button class="swatch-btn active" data-model="Carretera Aero · Carbono Negro" data-c1="#48484a" data-c2="#1c1c1e" data-accent="#2997ff" style="background:linear-gradient(135deg,#48484a,#111);" title="Carretera Carbono"></button>
+              <button class="swatch-btn" data-model="Gravel · Titanio Arena" data-c1="#d4b895" data-c2="#7a6448" data-accent="#ff9f0a" style="background:linear-gradient(135deg,#d4b895,#7a6448);" title="Gravel Titanio"></button>
+              <button class="swatch-btn" data-model="MTB Enduro · Azul Cobalto" data-c1="#2997ff" data-c2="#004080" data-accent="#30d158" style="background:linear-gradient(135deg,#2997ff,#004080);" title="MTB Azul"></button>
+              <button class="swatch-btn" data-model="Urbana · Plata Pulida" data-c1="#f5f5f7" data-c2="#8e8e93" data-accent="#bf5af2" style="background:linear-gradient(135deg,#f5f5f7,#8e8e93);" title="Urbana Plata"></button>
+              <span id="active-model-name" style="font-size:13px;font-weight:600;margin-left:6px;color:#f5f5f7;">Carretera Aero · Carbono Negro</span>
+            </div>
+
+            <div class="speed-controls">
+              <button class="mini-pill-btn" id="toggle-ride-btn">⏸ Pausar pedaleo</button>
+              <button class="mini-pill-btn" id="toggle-aura-btn">✦ Aura Pro</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SECCIÓN 2 (LIGHT): ANATOMÍA INTERACTIVA DE LA BICICLETA
+         ======================================================== -->
+    <section class="section-light" id="anatomia">
+      <div class="container">
+        <div class="section-header-center reveal">
+          <span class="section-eyebrow">Módulo 1 · Ingeniería y Partes</span>
+          <h2 class="section-title-lg">Cada milímetro tiene un propósito.</h2>
+          <p class="section-desc">Pulsa en los puntos interactivos sobre la bicicleta para inspeccionar su función mecánica y las recomendaciones clave del curso.</p>
+        </div>
+
+        <div class="anatomy-grid reveal">
+          <!-- Diagrama con Hotspots -->
+          <div class="anatomy-diagram-box">
+            <div class="anatomy-svg-wrap">
+              <svg viewBox="0 0 600 320" width="100%" height="auto" aria-label="Diagrama anatómico de bicicleta">
+                <circle cx="150" cy="210" r="70" fill="none" stroke="#1d1d1f" stroke-width="11"/>
+                <circle cx="150" cy="210" r="62" fill="none" stroke="#86868b" stroke-width="3"/>
+                <circle cx="450" cy="210" r="70" fill="none" stroke="#1d1d1f" stroke-width="11"/>
+                <circle cx="450" cy="210" r="62" fill="none" stroke="#86868b" stroke-width="3"/>
+                <!-- Cuadro -->
+                <g stroke="#0071e3" stroke-width="9" stroke-linecap="round" fill="none">
+                  <line x1="150" y1="210" x2="275" y2="210"/>
+                  <line x1="150" y1="210" x2="238" y2="105"/>
+                  <line x1="275" y1="210" x2="228" y2="75"/>
+                  <line x1="238" y1="102" x2="395" y2="94"/>
+                  <line x1="275" y1="210" x2="402" y2="108"/>
+                  <line x1="392" y1="84" x2="406" y2="118"/>
+                  <line x1="402" y1="112" x2="450" y2="210"/>
+                </g>
+                <!-- Sillín y manillar -->
+                <path d="M200 58 Q228 52 252 58" stroke="#1d1d1f" stroke-width="8" stroke-linecap="round" fill="none"/>
+                <path d="M392 84 L388 68 L418 68 C442 68 446 98 424 102" stroke="#1d1d1f" stroke-width="6" stroke-linecap="round" fill="none"/>
+                <!-- Transmisión -->
+                <circle cx="275" cy="210" r="20" fill="#1d1d1f"/>
+                <circle cx="150" cy="210" r="14" fill="#6e6e73"/>
+              </svg>
+
+              <!-- 5 Hotspots -->
+              <button class="hotspot-dot active" data-part="cuadro" style="left:53%;top:32%;" aria-label="Cuadro y geometría">1</button>
+              <button class="hotspot-dot" data-part="transmision" style="left:46%;top:66%;" aria-label="Transmisión">2</button>
+              <button class="hotspot-dot" data-part="frenos" style="left:75%;top:66%;" aria-label="Frenos de disco">3</button>
+              <button class="hotspot-dot" data-part="ruedas" style="left:25%;top:46%;" aria-label="Ruedas y neumáticos">4</button>
+              <button class="hotspot-dot" data-part="cockpit" style="left:69%;top:22%;" aria-label="Cockpit y dirección">5</button>
+            </div>
+          </div>
+
+          <!-- Tarjeta de detalle del componente -->
+          <div class="anatomy-info-card">
+            <div>
+              <span class="anatomy-part-tag" id="part-tag">Componente 1 de 5</span>
+              <h3 class="anatomy-part-title" id="part-title">Cuadro y Geometría</h3>
+              <p class="anatomy-part-text" id="part-text">
+                El corazón estructural de la bicicleta. Su triángulo principal determina la rigidez, la aerodinámica y la postura del ciclista (más relajada en Gran Fondo, más agresiva en Racing).
+              </p>
+
+              <div class="anatomy-specs" id="part-specs">
+                <div class="spec-row"><span class="spec-key">Materiales comunes</span><span class="spec-val">Carbono, Aluminio, Titanio</span></div>
+                <div class="spec-row"><span class="spec-key">Par de apriete típico</span><span class="spec-val">4 – 6 Nm (carbono)</span></div>
+                <div class="spec-row"><span class="spec-key">Punto crítico</span><span class="spec-val">Talla acorde a entrepierna</span></div>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+              <button class="apple-btn apple-btn-primary" id="mark-anatomy-done">Marcar Módulo 1 visto</button>
+              <span id="anatomy-status-msg" style="font-size:13px;color:var(--text-light-secondary);">Explora los 5 puntos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SECCIÓN 3 (DARK): SIMULADOR DE TRANSMISIÓN Y CADENCIA
+         ======================================================== -->
+    <section class="section-dark" id="simulador">
+      <div class="container">
+        <div class="section-header-center reveal">
+          <span class="section-eyebrow" style="color:var(--apple-blue-light);">Módulo 2 · Simulador en Vivo</span>
+          <h2 class="section-title-lg">Domina los desarrollos y la cadencia.</h2>
+          <p class="section-desc">Combina plato, piñón y cadencia de pedaleo para ver cómo cambian la relación mecánica, la velocidad y el esfuerzo.</p>
+        </div>
+
+        <div class="simulator-card reveal">
+          <!-- Visualizador animado de engranajes -->
+          <div class="gear-visual-box">
+            <svg class="gear-svg" viewBox="0 0 360 180" aria-label="Simulador de plato y piñón">
+              <!-- Cadena superior e inferior -->
+              <line x1="90" y1="62" x2="255" y2="42" stroke="#8e8e93" stroke-width="3" stroke-dasharray="6 4"/>
+              <line x1="90" y1="118" x2="255" y2="138" stroke="#8e8e93" stroke-width="3" stroke-dasharray="6 4"/>
+
+              <!-- Piñón trasero -->
+              <g class="gear-spin" id="sim-cog-group">
+                <circle cx="90" cy="90" r="28" fill="#1c1c1e" stroke="#2997ff" stroke-width="5" stroke-dasharray="8 4"/>
+                <circle cx="90" cy="90" r="10" fill="#3a3a3c"/>
+              </g>
+
+              <!-- Plato delantero -->
+              <g class="gear-spin" id="sim-ring-group">
+                <circle cx="255" cy="90" r="48" fill="#1c1c1e" stroke="#30d158" stroke-width="6" stroke-dasharray="10 5"/>
+                <circle cx="255" cy="90" r="16" fill="#3a3a3c"/>
+                <line x1="255" y1="90" x2="295" y2="90" stroke="#f5f5f7" stroke-width="5" stroke-linecap="round"/>
+              </g>
+            </svg>
+
+            <div class="gear-metrics-grid">
+              <div class="metric-pill">
+                <div class="metric-val" id="metric-ratio">3.57x</div>
+                <div class="metric-lbl">Relación</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-val" id="metric-dev">7.6 m</div>
+                <div class="metric-lbl">Por pedalada</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-val" id="metric-speed">41.1 km/h</div>
+                <div class="metric-lbl">Velocidad est.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controles del simulador -->
+          <div>
+            <div class="control-group">
+              <div class="control-label-row">
+                <span>Plato delantero (dientes)</span>
+                <span id="chainring-label" style="color:var(--apple-green);">50T (Grande)</span>
+              </div>
+              <div class="chip-options" id="chainring-options">
+                <button class="chip-btn" data-teeth="34">34T (Compact)</button>
+                <button class="chip-btn" data-teeth="39">39T (Medio)</button>
+                <button class="chip-btn active" data-teeth="50">50T (Grande)</button>
+                <button class="chip-btn" data-teeth="53">53T (Aero)</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row">
+                <span>Piñón trasero (dientes)</span>
+                <span id="cog-label" style="color:var(--apple-blue-light);">14T</span>
+              </div>
+              <div class="chip-options" id="cog-options">
+                <button class="chip-btn" data-teeth="11">11T</button>
+                <button class="chip-btn active" data-teeth="14">14T</button>
+                <button class="chip-btn" data-teeth="19">19T</button>
+                <button class="chip-btn" data-teeth="25">25T</button>
+                <button class="chip-btn" data-teeth="32">32T</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row">
+                <span>Cadencia de pedaleo</span>
+                <span id="cadence-val">90 RPM</span>
+              </div>
+              <input type="range" min="55" max="115" value="90" class="range-slider" id="cadence-slider">
+            </div>
+
+            <div class="terrain-alert" id="terrain-advice">
+              <strong>Llano rápido / Relevos:</strong> Desarrollo equilibrado con cadencia óptima para cuidar las rodillas (85–95 RPM).
+            </div>
+
+            <div style="margin-top:18px;">
+              <button class="apple-btn apple-btn-primary" id="mark-sim-done">Completar Módulo 2</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SECCIÓN 4 (LIGHT): BENTO GRID 2x2 INTERACTIVO
+         ======================================================== -->
+    <section class="section-light" id="bento">
+      <div class="container">
+        <div class="section-header-center reveal">
+          <span class="section-eyebrow">Módulos 3 y 4 · Herramientas Prácticas</span>
+          <h2 class="section-title-lg">Calculadoras y chequeos en un vistazo.</h2>
+          <p class="section-desc">Ajusta tu bicicleta a tu cuerpo y prepara tu salida en menos de un minuto.</p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Card 1: Biomecánica (Dark) -->
+          <article class="bento-card bento-dark reveal">
+            <div>
+              <span class="section-eyebrow" style="color:var(--apple-blue-light);">Biomecánica · Método LeMond</span>
+              <h3 class="bento-title">Altura exacta del sillín</h3>
+              <p class="bento-sub">Mide tu entrepierna descalzo (cm) para evitar lesiones de rodilla y optimizar la potencia.</p>
+            </div>
+            <div class="bento-box-inner">
+              <div class="input-inline">
+                <label for="inseam-input" style="font-size:13px;">Entrepierna (cm):</label>
+                <input type="number" id="inseam-input" class="apple-input" value="82" min="60" max="105">
+                <button class="mini-pill-btn" id="calc-saddle-btn" style="background:var(--apple-blue);">Calcular</button>
+              </div>
+              <div style="font-size:15px;">
+                Altura recomendada (centro pedalier a tope sillín):
+                <strong id="saddle-result" style="color:var(--apple-green);font-size:20px;display:block;margin-top:4px;">72.6 cm</strong>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 2: Presión de Neumáticos (Light) -->
+          <article class="bento-card bento-light reveal">
+            <div>
+              <span class="section-eyebrow">Física del Rodaje</span>
+              <h3 class="bento-title">Presión inteligente</h3>
+              <p class="bento-sub">Más presión no siempre es más rápido. Calcula el equilibrio ideal entre agarre y eficiencia.</p>
+            </div>
+            <div class="bento-box-inner">
+              <div class="input-inline">
+                <select id="tire-type" class="apple-input" style="width:145px;">
+                  <option value="road">Carretera (28mm)</option>
+                  <option value="gravel">Gravel (40mm)</option>
+                  <option value="mtb">MTB (2.25")</option>
+                </select>
+                <input type="number" id="rider-weight" class="apple-input" value="72" min="40" max="130" style="width:85px;">
+                <span style="font-size:13px;">kg</span>
+              </div>
+              <div>
+                Presión sugerida:
+                <strong id="tire-result" style="color:var(--apple-blue);font-size:20px;display:block;margin-top:4px;">5.2 BAR / 75 PSI</strong>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 3: Chequeo Pre-Salida ABC (Dark) -->
+          <article class="bento-card bento-dark reveal">
+            <div>
+              <span class="section-eyebrow" style="color:var(--apple-green);">Mantenimiento Express</span>
+              <h3 class="bento-title">Regla ABC antes de rodar</h3>
+              <p class="bento-sub">Marca cada punto de inspección para verificar que tu bicicleta es 100% segura.</p>
+            </div>
+            <div>
+              <div class="abc-item" data-abc="a">
+                <span><strong>A — Aire:</strong> Neumáticos firmes y sin cortes</span>
+                <span class="abc-check">○</span>
+              </div>
+              <div class="abc-item" data-abc="b">
+                <span><strong>B — Brakes (Frenos):</strong> Manetas firmes sin tocar puño</span>
+                <span class="abc-check">○</span>
+              </div>
+              <div class="abc-item" data-abc="c">
+                <span><strong>C — Cadena y Cierres:</strong> Lubricada y ejes apretados</span>
+                <span class="abc-check">○</span>
+              </div>
+              <p id="abc-status" style="font-size:13px;color:var(--text-dark-secondary);margin-top:10px;">0 de 3 comprobaciones listas.</p>
+            </div>
+          </article>
+
+          <!-- Card 4: Seguridad Vial (Light) -->
+          <article class="bento-card bento-light reveal">
+            <div>
+              <span class="section-eyebrow">Seguridad Vial</span>
+              <h3 class="bento-title">Señalización con brazos</h3>
+              <p class="bento-sub">Comunica tus maniobras con antelación al tráfico y al pelotón.</p>
+            </div>
+            <div>
+              <div class="signal-grid">
+                <button class="signal-btn active" data-signal="left">⬅️ Giro izquierda</button>
+                <button class="signal-btn" data-signal="right">➡️ Giro derecha</button>
+                <button class="signal-btn" data-signal="stop">✋ Detención</button>
+                <button class="signal-btn" data-signal="hazard">👇 Obstáculo</button>
+              </div>
+              <div id="signal-desc" style="margin-top:12px;padding:12px;border-radius:12px;background:#f5f5f7;font-size:13px;">
+                <strong>Giro a la izquierda:</strong> Extiende el brazo izquierdo completamente en horizontal antes de iniciar el desplazamiento lateral.
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SECCIÓN 5 (DARK): MÓDULOS DEL CURSO (TEMARIO INTERACTIVO)
+         ======================================================== -->
+    <section class="section-dark" id="modulos">
+      <div class="container">
+        <div class="section-header-center reveal">
+          <span class="section-eyebrow" style="color:var(--apple-blue-light);">Programa Académico</span>
+          <h2 class="section-title-lg">4 Módulos. De cero a ciclista experto.</h2>
+          <p class="section-desc">Haz clic en cualquier módulo para abrir su ficha didáctica y registrar tu avance.</p>
+        </div>
+
+        <div class="modules-grid reveal" id="modules-grid"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SECCIÓN 6 (LIGHT): EVALUACIÓN FINAL INTERACTIVA
+         ======================================================== -->
+    <section class="section-light" id="evaluacion">
+      <div class="container">
+        <div class="section-header-center reveal">
+          <span class="section-eyebrow">Autoevaluación Canvas LMS</span>
+          <h2 class="section-title-lg">Pon a prueba lo aprendido.</h2>
+          <p class="section-desc">Responde 5 preguntas clave sobre mecánica, transmisión, biomecánica y seguridad vial.</p>
+        </div>
+
+        <div class="quiz-box reveal" id="quiz-box">
+          <div id="quiz-active-view">
+            <div class="quiz-progress-row">
+              <span id="quiz-step-label">Pregunta 1 de 5</span>
+              <span id="quiz-score-label">Aciertos: 0</span>
+            </div>
+            <h3 class="quiz-question" id="quiz-question">Cargando pregunta...</h3>
+            <div class="quiz-options" id="quiz-options"></div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+              <button class="apple-btn apple-btn-primary" id="quiz-next-btn" style="display:none;">Siguiente pregunta &rarr;</button>
+            </div>
+          </div>
+          <div id="quiz-result-view" style="display:none;text-align:center;padding:18px 0;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de lección -->
+  <div class="modal-backdrop" id="lesson-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
+      <span class="section-eyebrow" id="modal-eyebrow" style="color:var(--apple-blue-light);">Módulo</span>
+      <h3 id="modal-title" style="font-size:26px;font-weight:700;margin-bottom:10px;"></h3>
+      <p id="modal-desc" style="font-size:15px;color:#a1a1a6;"></p>
+      <ul class="modal-bullets" id="modal-bullets"></ul>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="apple-btn apple-btn-primary" id="modal-complete-btn">Marcar módulo como completado</button>
+        <button class="apple-btn apple-btn-secondary" id="modal-cancel-btn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dock flotante inferior -->
+  <nav class="floating-dock" aria-label="Accesos rápidos">
+    <a href="#inicio" class="dock-link">Inicio</a>
+    <a href="#anatomia" class="dock-link">Anatomía</a>
+    <a href="#simulador" class="dock-link">Simulador</a>
+    <a href="#bento" class="dock-link">Calculadoras</a>
+    <a href="#modulos" class="dock-link">Módulos</a>
+    <a href="#evaluacion" class="dock-link" style="background:var(--apple-blue);color:#fff;">Test</a>
+  </nav>
+
+  <!-- Footer -->
+  <footer class="global-footer">
+    <div class="footer-inner">
+      <div class="footer-notes">
+        <p>* Las fórmulas de altura de sillín (0.885 × entrepierna) y presiones de neumático son referencias orientativas de inicio; un estudio biomecánico profesional personaliza ángulos de rodilla y calas.</p>
+        <p>** Recurso HTML interactivo autónomo preparado para incrustación mediante &lt;iframe&gt; en LMS Canvas desde GitHub Pages.</p>
+      </div>
+      <div class="footer-bottom">
+        <span>VeloAcademy · Curso Interactivo de Bicicletas</span>
+        <span>Diseño inspirado en la arquitectura web de Apple · Español</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       JAVASCRIPT INTERACTIVO
+       ======================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------- 1. PROGRESO PERSISTENTE DEL CURSO ---------- */
+      const COURSE_MODULES = [
+        {
+          id: 'm1',
+          num: 'Módulo 01',
+          title: 'Anatomía y Geometría del Cuadro',
+          summary: 'Aprende a distinguir materiales, ángulos de dirección y cómo elegir la talla correcta.',
+          bullets: [
+            'El triángulo delantero aporta rigidez torsional; el trasero absorbe vibraciones.',
+            'El Stack (altura) y Reach (alcance) definen tu postura mejor que la talla S/M/L.',
+            'Usa siempre llave dinamométrica en cuadros de carbono (4 a 6 Nm).'
+          ]
+        },
+        {
+          id: 'm2',
+          num: 'Módulo 02',
+          title: 'Transmisión, Cambios y Cadencia',
+          summary: 'Optimiza el uso de platos y piñones manteniendo una cadencia eficiente sin cruzar la cadena.',
+          bullets: [
+            'Una cadencia de 85–95 RPM protege las articulaciones frente a desarrollos muy duros.',
+            'Evita cruzar la cadena (plato grande con piñón grande o plato pequeño con piñón pequeño).',
+            'Anticipa los cambios antes de iniciar una rampa para no forzar el desviador bajo carga.'
+          ]
+        },
+        {
+          id: 'm3',
+          num: 'Módulo 03',
+          title: 'Biomecánica, Ruedas y Mantenimiento',
+          summary: 'Ajusta el sillín con precisión, calcula la presión exacta y ejecuta el chequeo ABC.',
+          bullets: [
+            'Fórmula LeMond: altura sillín = entrepierna (cm) × 0.885.',
+            'Menor presión en cubiertas anchas mejora el agarre y reduce la resistencia en asfalto irregular.',
+            'Limpia y lubrica la cadena con cera o aceite seco/húmedo según el clima.'
+          ]
+        },
+        {
+          id: 'm4',
+          num: 'Módulo 04',
+          title: 'Seguridad Vial y Técnicas de Frenado',
+          summary: 'Señalización, distancia de seguridad y reparto de frenada en mojado y descenso.',
+          bullets: [
+            'El freno delantero aporta ~70% de la capacidad de detención; dosifícalo progresivamente.',
+            'Mantén la vista lejos de la rueda delantera para anticipar baches y tráfico.',
+            'Usa luz diurna trasera y señaliza cada cambio de carril o detención con antelación.'
+          ]
+        }
+      ];
+
+      const STORAGE_KEY = 'veloacademy_progress_v1';
+      let completedIds = [];
+      try {
+        completedIds = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        completedIds = [];
+      }
+
+      function saveProgress() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds));
+        } catch (e) {}
+      }
+
+      function markModuleComplete(id) {
+        if (!completedIds.includes(id)) {
+          completedIds.push(id);
+          saveProgress();
+        }
+        renderProgressUI();
+        renderModulesGrid();
+      }
+
+      function renderProgressUI() {
+        const pct = Math.round((completedIds.length / COURSE_MODULES.length) * 100);
+        document.getElementById('nav-progress-badge').textContent = pct + '%';
+        document.getElementById('global-progress-fill').style.width = pct + '%';
+
+        const list = document.getElementById('progress-checklist');
+        list.innerHTML = COURSE_MODULES.map(m => {
+          const isDone = completedIds.includes(m.id);
+          return `<div class="progress-item ${isDone ? 'done' : ''}">
+            <span>${isDone ? '✅' : '⭕'}</span>
+            <span><strong>${m.num}:</strong> ${m.title}</span>
+          </div>`;
+        }).join('');
+      }
+
+      /* ---------- 2. OVERLAYS DE HEADER Y MENÚ MÓVIL ---------- */
+      const searchOverlay = document.getElementById('search-overlay');
+      const progressOverlay = document.getElementById('progress-overlay');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      document.getElementById('search-trigger').addEventListener('click', () => {
+        progressOverlay.classList.remove('open');
+        searchOverlay.classList.toggle('open');
+        if (searchOverlay.classList.contains('open')) {
+          document.getElementById('course-search-input').focus();
+        }
+      });
+      document.getElementById('search-close').addEventListener('click', () => searchOverlay.classList.remove('open'));
+
+      document.getElementById('progress-trigger').addEventListener('click', () => {
+        searchOverlay.classList.remove('open');
+        progressOverlay.classList.toggle('open');
+      });
+      document.getElementById('progress-close').addEventListener('click', () => progressOverlay.classList.remove('open'));
+
+      document.getElementById('reset-progress-btn').addEventListener('click', () => {
+        completedIds = [];
+        saveProgress();
+        renderProgressUI();
+        renderModulesGrid();
+      });
+
+      document.getElementById('nav-toggle').addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
+
+      document.querySelectorAll('.mobile-link, #search-results a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+          searchOverlay.classList.remove('open');
+        });
+      });
+
+      /* Buscador interactivo */
+      const searchData = [
+        { text: 'Anatomía interactiva de la bicicleta (5 partes)', href: '#anatomia' },
+        { text: 'Simulador de platos, piñones y cadencia', href: '#simulador' },
+        { text: 'Calculadora de altura exacta del sillín (LeMond)', href: '#bento' },
+        { text: 'Calculadora de presión de neumáticos (PSI / BAR)', href: '#bento' },
+        { text: 'Chequeo pre-salida Regla ABC', href: '#bento' },
+        { text: 'Señalización manual y seguridad vial', href: '#bento' },
+        { text: 'Módulos teóricos del curso (1 a 4)', href: '#modulos' },
+        { text: 'Evaluación final interactiva (Test 5 preguntas)', href: '#evaluacion' }
+      ];
+
+      document.getElementById('course-search-input').addEventListener('input', function () {
+        const q = this.value.trim().toLowerCase();
+        const filtered = searchData.filter(item => item.text.toLowerCase().includes(q));
+        const resEl = document.getElementById('search-results');
+        resEl.innerHTML = (filtered.length ? filtered : [{ text: 'Sin resultados exactos. Ir al inicio', href: '#inicio' }])
+          .map(item => `<li><a href="${item.href}"><span>${item.text}</span><span>Ir &rarr;</span></a></li>`)
+          .join('');
+        resEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => searchOverlay.classList.remove('open')));
+      });
+
+      /* ---------- 3. HERO 3D TILT, TELEMETRÍA Y ACABADOS ---------- */
+      const stageCard = document.getElementById('bike-stage-card');
+      stageCard.addEventListener('mousemove', (e) => {
+        const rect = stageCard.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        stageCard.style.transform = `rotateY(${x * 9}deg) rotateX(${-y * 7}deg)`;
+      });
+      stageCard.addEventListener('mouseleave', () => {
+        stageCard.style.transform = 'rotateY(0deg) rotateX(0deg)';
+      });
+
+      /* Dynamic Telemetry Pill */
+      const telemetryModes = [
+        'Modo Carretera Aero · 90 RPM · 245 W',
+        'Modo Escalada · 82 RPM · Pendiente 7.4%',
+        'Modo Gravel · Presión 2.8 BAR · Tracción+',
+        'Modo Urbano · Luz Diurna ON · 24 km/h'
+      ];
+      let telemetryIdx = 0;
+      document.getElementById('telemetry-pill').addEventListener('click', () => {
+        telemetryIdx = (telemetryIdx + 1) % telemetryModes.length;
+        document.getElementById('telemetry-text').textContent = telemetryModes[telemetryIdx];
+      });
+
+      /* Selector de acabados */
+      document.querySelectorAll('.swatch-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('frame-stop-1').setAttribute('stop-color', btn.dataset.c1);
+          document.getElementById('frame-stop-2').setAttribute('stop-color', btn.dataset.c2);
+          document.getElementById('frame-accent-line').setAttribute('stroke', btn.dataset.accent);
+          document.getElementById('active-model-name').textContent = btn.dataset.model;
+        });
+      });
+
+      /* Pausar / reanudar animación */
+      let riding = true;
+      const toggleRideBtn = document.getElementById('toggle-ride-btn');
+      toggleRideBtn.addEventListener('click', () => {
+        riding = !riding;
+        document.querySelectorAll('.wheel-spin, .road-dash').forEach(el => {
+          el.classList.toggle('paused', !riding);
+        });
+        toggleRideBtn.textContent = riding ? '⏸ Pausar pedaleo' : '▶ Reanudar pedaleo';
+      });
+
+      document.getElementById('toggle-aura-btn').addEventListener('click', () => {
+        stageCard.classList.toggle('aura-active');
+      });
+
+      /* ---------- 4. ANATOMÍA INTERACTIVA (HOTSPOTS) ---------- */
+      const ANATOMY_PARTS = {
+        cuadro: {
+          tag: 'Componente 1 de 5',
+          title: 'Cuadro y Geometría',
+          text: 'El corazón estructural de la bicicleta. Su triángulo principal determina la rigidez, la aerodinámica y la postura del ciclista (Gran Fondo vs Racing).',
+          specs: [
+            ['Materiales comunes', 'Carbono, Aluminio, Titanio'],
+            ['Par de apriete típico', '4 – 6 Nm (carbono)'],
+            ['Clave de compra', 'Elige talla por Stack y Reach']
+          ]
+        },
+        transmision: {
+          tag: 'Componente 2 de 5',
+          title: 'Transmisión (Platos, Cadena y Cassette)',
+          text: 'Convierte tu fuerza muscular en avance. Mantener la cadena limpia y alineada ahorra hasta 8–12 vatios de fricción innecesaria.',
+          specs: [
+            ['Relación habitual', '50/34T delante · 11-32T detrás'],
+            ['Desgaste cadena', 'Cambiar al llegar al 0.5% - 0.75%'],
+            ['Lubricación', 'Cada 150–250 km en seco']
+          ]
+        },
+        frenos: {
+          tag: 'Componente 3 de 5',
+          title: 'Frenos de Disco Hidráulicos',
+          text: 'Ofrecen modulación constante bajo lluvia o descensos largos sin calentar la llanta. El freno delantero aporta ~70% de la potencia de frenada.',
+          specs: [
+            ['Diámetro discos', '140 mm / 160 mm (carretera) · 180+ MTB'],
+            ['Fluido', 'Aceite mineral o líquido DOT'],
+            ['Cuidado crítico', 'Nunca tocar el disco con grasa']
+          ]
+        },
+        ruedas: {
+          tag: 'Componente 4 de 5',
+          title: 'Ruedas y Neumáticos',
+          text: 'El único punto de contacto con el suelo. Un neumático ligeramente más ancho (28–32 mm) a presión adecuada mejora confort, agarre y velocidad real.',
+          specs: [
+            ['Sistemas', 'Cámara clásica o Tubeless Ready'],
+            ['Perfil de llanta', 'Bajo (escalada) / Alto (aero llano)'],
+            ['Revisión semanal', 'Comprobar presión antes de salir']
+          ]
+        },
+        cockpit: {
+          tag: 'Componente 5 de 5',
+          title: 'Cockpit (Manillar, Potencia y Dirección)',
+          text: 'Controla la trazada y el reparto de peso. El ancho del manillar debe corresponder al ancho de tus hombros para respirar sin tensión cervical.',
+          specs: [
+            ['Ancho típico', '380 – 440 mm (carretera)'],
+            ['Potencia', '80 – 120 mm según alcance'],
+            ['Comprobación', 'Sin holgura al frenar delante']
+          ]
+        }
+      };
+
+      document.querySelectorAll('.hotspot-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.querySelectorAll('.hotspot-dot').forEach(d => d.classList.remove('active'));
+          dot.classList.add('active');
+          const data = ANATOMY_PARTS[dot.dataset.part];
+          document.getElementById('part-tag').textContent = data.tag;
+          document.getElementById('part-title').textContent = data.title;
+          document.getElementById('part-text').textContent = data.text;
+          document.getElementById('part-specs').innerHTML = data.specs
+            .map(([k, v]) => `<div class="spec-row"><span class="spec-key">${k}</span><span class="spec-val">${v}</span></div>`)
+            .join('');
+        });
+      });
+
+      document.getElementById('mark-anatomy-done').addEventListener('click', () => {
+        markModuleComplete('m1');
+        document.getElementById('anatomy-status-msg').textContent = '✅ Módulo 1 completado';
+      });
+
+      /* ---------- 5. SIMULADOR DE TRANSMISIÓN Y CADENCIA ---------- */
+      let frontTeeth = 50;
+      let rearTeeth = 14;
+      let cadence = 90;
+
+      function updateSimulator() {
+        const ratio = frontTeeth / rearTeeth;
+        const wheelCircMeters = 2.13; // ~700x28c
+        const metersPerStroke = ratio * wheelCircMeters;
+        const speedKmh = (metersPerStroke * cadence * 60) / 1000;
+
+        document.getElementById('metric-ratio').textContent = ratio.toFixed(2) + 'x';
+        document.getElementById('metric-dev').textContent = metersPerStroke.toFixed(1) + ' m';
+        document.getElementById('metric-speed').textContent = speedKmh.toFixed(1) + ' km/h';
+        document.getElementById('chainring-label').textContent = frontTeeth + 'T';
+        document.getElementById('cog-label').textContent = rearTeeth + 'T';
+        document.getElementById('cadence-val').textContent = cadence + ' RPM';
+
+        // Velocidad de animación proporcional
+        const ringDur = Math.max(0.5, 60 / cadence * 2);
+        const cogDur = Math.max(0.25, ringDur / ratio);
+        document.getElementById('sim-ring-group').style.animationDuration = ringDur.toFixed(2) + 's';
+        document.getElementById('sim-cog-group').style.animationDuration = cogDur.toFixed(2) + 's';
+
+        // Consejo inteligente + detección de cruce de cadena
+        const adviceEl = document.getElementById('terrain-advice');
+        const crossLarge = frontTeeth >= 50 && rearTeeth >= 25;
+        const crossSmall = frontTeeth <= 39 && rearTeeth <= 11;
+
+        if (crossLarge || crossSmall) {
+          adviceEl.className = 'terrain-alert warning';
+          adviceEl.innerHTML = '<strong>⚠ Cruce de cadena detectado:</strong> Estás forzando la línea de cadena. Cambia de plato para reducir desgaste y ruido.';
+        } else if (ratio >= 3.5) {
+          adviceEl.className = 'terrain-alert';
+          adviceEl.innerHTML = '<strong>Llano rápido / Descenso:</strong> Desarrollo largo de alta velocidad. Ideal para rodar a rueda o bajar puertos.';
+        } else if (ratio >= 2.1) {
+          adviceEl.className = 'terrain-alert';
+          adviceEl.innerHTML = '<strong>Terreno mixto / Falso llano:</strong> Desarrollo versátil para mantener una cadencia fluida (85–95 RPM).';
+        } else {
+          adviceEl.className = 'terrain-alert';
+          adviceEl.innerHTML = '<strong>Subida exigente / Puerto:</strong> Desarrollo corto que multiplica el par y protege tus rodillas en pendientes fuertes.';
+        }
+      }
+
+      document.querySelectorAll('#chainring-options .chip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#chainring-options .chip-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          frontTeeth = Number(btn.dataset.teeth);
+          updateSimulator();
+        });
+      });
+
+      document.querySelectorAll('#cog-options .chip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#cog-options .chip-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          rearTeeth = Number(btn.dataset.teeth);
+          updateSimulator();
+        });
+      });
+
+      document.getElementById('cadence-slider').addEventListener('input', function () {
+        cadence = Number(this.value);
+        updateSimulator();
+      });
+
+      document.getElementById('mark-sim-done').addEventListener('click', function () {
+        markModuleComplete('m2');
+        this.textContent = '✅ Módulo 2 completado';
+      });
+      updateSimulator();
+
+      /* ---------- 6. BENTO CALCULADORAS Y CHECKS ---------- */
+      function calcSaddle() {
+        const inseam = Math.min(110, Math.max(55, Number(document.getElementById('inseam-input').value) || 82));
+        const height = (inseam * 0.885).toFixed(1);
+        document.getElementById('saddle-result').textContent = height + ' cm';
+      }
+      document.getElementById('calc-saddle-btn').addEventListener('click', calcSaddle);
+      document.getElementById('inseam-input').addEventListener('input', calcSaddle);
+
+      function calcTirePressure() {
+        const type = document.getElementById('tire-type').value;
+        const w = Math.min(140, Math.max(40, Number(document.getElementById('rider-weight').value) || 72));
+        let bar = 5.2;
+        if (type === 'road') bar = 4.2 + (w - 50) * 0.045;
+        if (type === 'gravel') bar = 2.1 + (w - 50) * 0.028;
+        if (type === 'mtb') bar = 1.45 + (w - 50) * 0.018;
+        const psi = Math.round(bar * 14.5038);
+        document.getElementById('tire-result').textContent = bar.toFixed(1) + ' BAR / ' + psi + ' PSI';
+      }
+      document.getElementById('tire-type').addEventListener('change', calcTirePressure);
+      document.getElementById('rider-weight').addEventListener('input', calcTirePressure);
+
+      /* Checklist ABC */
+      document.querySelectorAll('.abc-item').forEach(item => {
+        item.addEventListener('click', () => {
+          item.classList.toggle('checked');
+          item.querySelector('.abc-check').textContent = item.classList.contains('checked') ? '✅' : '○';
+          const count = document.querySelectorAll('.abc-item.checked').length;
+          document.getElementById('abc-status').textContent =
+            count === 3 ? '✅ ¡Bicicleta lista para rodar con seguridad!' : `${count} de 3 comprobaciones listas.`;
+          if (count === 3) markModuleComplete('m3');
+        });
+      });
+
+      /* Señales manuales */
+      const SIGNALS = {
+        left: '<strong>Giro a la izquierda:</strong> Extiende el brazo izquierdo completamente en horizontal antes de iniciar el desplazamiento lateral.',
+        right: '<strong>Giro a la derecha:</strong> Extiende el brazo derecho en horizontal (o brazo izquierdo flexionado hacia arriba a 90°).',
+        stop: '<strong>Detención o reducción brusca:</strong> Extiende un brazo hacia abajo con la palma abierta hacia atrás para avisar al pelotón.',
+        hazard: '<strong>Obstáculo en la calzada:</strong> Señala hacia el suelo con el dedo índice en el lado donde se encuentra el bache o cristal.'
+      };
+      document.querySelectorAll('.signal-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.signal-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('signal-desc').innerHTML = SIGNALS[btn.dataset.signal];
+        });
+      });
+
+      /* ---------- 7. MÓDULOS Y MODAL DE LECCIÓN ---------- */
+      let activeModalModuleId = null;
+      const modal = document.getElementById('lesson-modal');
+
+      function renderModulesGrid() {
+        const grid = document.getElementById('modules-grid');
+        grid.innerHTML = COURSE_MODULES.map(m => {
+          const done = completedIds.includes(m.id);
+          return `<div class="module-card" data-mid="${m.id}">
+            <div>
+              <div class="module-num">${m.num}</div>
+              <h3 class="module-title">${m.title}</h3>
+              <p class="module-summary">${m.summary}</p>
+            </div>
+            <div class="module-footer">
+              <span>Abrir lección &rsaquo;</span>
+              <span class="module-status-pill ${done ? 'done' : ''}">${done ? 'Completado' : 'Pendiente'}</span>
+            </div>
+          </div>`;
+        }).join('');
+
+        grid.querySelectorAll('.module-card').forEach(card => {
+          card.addEventListener('click', () => openLessonModal(card.dataset.mid));
+        });
+      }
+
+      function openLessonModal(id) {
+        const m = COURSE_MODULES.find(x => x.id === id);
+        if (!m) return;
+        activeModalModuleId = id;
+        document.getElementById('modal-eyebrow').textContent = m.num;
+        document.getElementById('modal-title').textContent = m.title;
+        document.getElementById('modal-desc').textContent = m.summary;
+        document.getElementById('modal-bullets').innerHTML = m.bullets.map(b => `<li>✦ ${b}</li>`).join('');
+        modal.classList.add('open');
+      }
+
+      document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('open'));
+      document.getElementById('modal-cancel-btn').addEventListener('click', () => modal.classList.remove('open'));
+      modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+      document.getElementById('modal-complete-btn').addEventListener('click', () => {
+        if (activeModalModuleId) markModuleComplete(activeModalModuleId);
+        modal.classList.remove('open');
+      });
+
+      /* ---------- 8. EVALUACIÓN FINAL INTERACTIVA (QUIZ) ---------- */
+      const QUIZ = [
+        {
+          q: 'Según el método LeMond, si tu entrepierna mide 80 cm, ¿cuál es la altura inicial recomendada del sillín?',
+          opts: ['68.0 cm', '70.8 cm', '75.2 cm'],
+          ans: 1,
+          exp: '80 cm × 0.885 = 70.8 cm desde el centro del eje pedalier hasta la parte superior del sillín.'
+        },
+        {
+          q: '¿Qué combinación debes evitar para no provocar "cruce de cadena"?',
+          opts: ['Plato grande con piñón pequeño', 'Plato grande con piñón más grande', 'Plato pequeño con piñón grande'],
+          ans: 1,
+          exp: 'Usar plato grande con el piñón más grande (o plato pequeño con el más pequeño) genera ángulo extremo y desgaste prematuro.'
+        },
+        {
+          q: 'En una frenada de emergencia en seco, ¿qué porcentaje aproximado de frenada aporta el freno delantero?',
+          opts: ['Alrededor del 70%', 'Alrededor del 20%', 'Exactamente el 50%'],
+          ans: 0,
+          exp: 'Al frenar, el peso se transfiere hacia delante, por lo que el freno delantero genera ~70% de la capacidad de detención.'
+        },
+        {
+          q: '¿Qué significa la "B" en la regla de inspección pre-salida ABC?',
+          opts: ['Bielas', 'Brakes (Frenos)', 'Botellín'],
+          ans: 1,
+          exp: 'ABC corresponde a Aire (ruedas), Brakes (frenos) y Cadena/Cierres.'
+        },
+        {
+          q: '¿Qué rango de cadencia se considera óptimo en llano para equilibrar eficiencia cardiovascular y cuidado articular?',
+          opts: ['45 – 55 RPM', '85 – 95 RPM', '130 – 145 RPM'],
+          ans: 1,
+          exp: 'Entre 85 y 95 pedaladas por minuto evitas sobrecargar tendones y rodillas.'
+        }
+      ];
+
+      let quizIdx = 0;
+      let quizScore = 0;
+
+      function renderQuiz() {
+        const activeView = document.getElementById('quiz-active-view');
+        const resultView = document.getElementById('quiz-result-view');
+        if (quizIdx >= QUIZ.length) {
+          markModuleComplete('m4');
+          const passed = quizScore >= 4;
+          activeView.style.display = 'none';
+          resultView.style.display = 'block';
+          resultView.innerHTML = `
+            <div style="font-size:46px;margin-bottom:10px;">${passed ? '🏆' : '🚴'}</div>
+            <h3 style="font-size:28px;font-weight:700;margin-bottom:10px;">Resultado: ${quizScore} / ${QUIZ.length}</h3>
+            <p style="color:#6e6e73;margin-bottom:24px;">
+              ${passed
+                ? '¡Excelente dominio técnico! Has completado el recorrido interactivo de VeloAcademy.'
+                : 'Buen intento. Repasa los módulos recomendados e inténtalo de nuevo para superar el 80%.'}
+            </p>
+            <button class="apple-btn apple-btn-primary" id="retry-quiz-btn">Repetir evaluación</button>
+          `;
+          document.getElementById('retry-quiz-btn').addEventListener('click', () => {
+            quizIdx = 0;
+            quizScore = 0;
+            resultView.style.display = 'none';
+            activeView.style.display = 'block';
+            renderQuiz();
+          });
+          return;
+        }
+        activeView.style.display = 'block';
+        resultView.style.display = 'none';
+
+        const item = QUIZ[quizIdx];
+        document.getElementById('quiz-step-label').textContent = `Pregunta ${quizIdx + 1} de ${QUIZ.length}`;
+        document.getElementById('quiz-score-label').textContent = `Aciertos: ${quizScore}`;
+        document.getElementById('quiz-question').textContent = item.q;
+        document.getElementById('quiz-feedback').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+
+        const optsEl = document.getElementById('quiz-options');
+        optsEl.innerHTML = item.opts.map((opt, idx) =>
+          `<button class="quiz-opt" data-idx="${idx}">${opt}</button>`
+        ).join('');
+
+        optsEl.querySelectorAll('.quiz-opt').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const chosen = Number(btn.dataset.idx);
+            optsEl.querySelectorAll('.quiz-opt').forEach((b, i) => {
+              b.disabled = true;
+              if (i === item.ans) b.classList.add('correct');
+              else if (i === chosen) b.classList.add('wrong');
+            });
+            if (chosen === item.ans) quizScore++;
+            const fb = document.getElementById('quiz-feedback');
+            fb.style.display = 'block';
+            fb.innerHTML = `<strong>${chosen === item.ans ? '¡Correcto!' : 'Respuesta incorrecta:'}</strong> ${item.exp}`;
+            document.getElementById('quiz-score-label').textContent = `Aciertos: ${quizScore}`;
+            document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+          });
+        });
+      }
+
+      document.getElementById('quiz-next-btn').addEventListener('click', () => {
+        quizIdx++;
+        renderQuiz();
+      });
+
+      /* ---------- 9. REVEAL ON SCROLL ---------- */
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      /* Inicialización */
+      renderProgressUI();
+      renderModulesGrid();
+      renderQuiz();
+    })();
+  </script>
+</body>
+</html>
